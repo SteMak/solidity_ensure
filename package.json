@@ -1,0 +1,7 @@
+{
+  "name": "solidity_ensure",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "hardhat": "^2.17.0"
+  }
+}
