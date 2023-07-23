@@ -1,7 +1,7 @@
 # Solidity Ensure
 
 ## Disclaimer
-The usage of the `ensure(condition, build_CUSTOM_ERROR(CUSTOM_ERROR parameters))` function is considered to be gas inefficient compared to `require(condition, "Error message")` and `if (!condition) revert CUSTOM_ERROR(CUSTOM_ERROR parameters)`.
+The usage of the `ensure(condition, build_CUSTOM_ERROR(CUSTOM_ERROR parameters))` function is considered to be Gas-inefficient compared to `require(condition, "Error message")` and `if (!condition) revert CUSTOM_ERROR(CUSTOM_ERROR parameters)`.
 
 ## Abstract
 Starting from `solidity 0.8.4`, Custom Errors are available, providing the ability to efficiently return dynamic data packed in an efficient format.
@@ -13,7 +13,7 @@ In smart contracts, it is often more valuable to check if values are within cert
 This project aims to develop an `ensure` function that allows the usage of Custom Errors within a declarative `require` pattern.
 
 ## Fake Custom Errors
-Custom errors are ABI encoded as follows:
+Custom Errors are ABI encoded as follows:
 - 4 bytes Custom Error selector
 - 32 bytes for each Custom Error parameter
 
@@ -24,8 +24,12 @@ To throw the error message, the `assembly revert` instruction is used, allowing 
 It is worth mentioning that `abi.encode` accepts parameters of any type, which led to the proposal of building builder functions for each error. These builder functions accept corresponding parameters and perform auto typechecks.
 
 ## Result
-The `ensure` function was developed and should be used within the `ensure(condition, build_CUSTOM_ERROR(CUSTOM_ERROR parameters))` pattern. It preserves the declarative `require` pattern and allows for the usage of Custom Errors.
+The `ensure` function has been developed and should be used within the `ensure(condition, build_CUSTOM_ERROR(CUSTOM_ERROR parameters))` pattern. It preserves the declarative `require` pattern and allows for the usage of Custom Errors.
+
+Refer to the [Example.sol](./contracts/Example.sol) file for an implementation example.
 
 However, there are some flaws:
-- The need to declare a builder function for each error leads to code overload and increased gas consumption during deployment.
-- Custom Error data is not lazy-built, and the error message is calculated before the function call, causing ordinary checks to incur gas costs based on the error parameter types.
+- The need to declare a builder function for each error leads to code overload and increased Gas consumption during deployment.
+- Custom Error data is not lazily built, and the error message is calculated before the function call, causing ordinary checks to incur additional Gas costs based on the error parameter types.
+
+I have raised an [issue](https://github.com/ethereum/solidity/issues/14442) in the `ethereum/solidity` repo to address the lack of Custom Errors support in the `require` function.
